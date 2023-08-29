@@ -1,40 +1,25 @@
 export const enum TreeItemType {
-	Tab,
-	Group,
-	Slot,
+	File,
+	Folder,
 };
 
-export type Group = {
-	readonly type: TreeItemType.Group;
-	readonly id: string;
-	colorId: string;
-	label: string;
-	children: Tab[];
-	collapsed: boolean;
-};
-
-export type Tab = {
-	readonly type: TreeItemType.Tab;
-	groupId: string | null;
+export type Folder = {
+	readonly type: TreeItemType.Folder;
 	id: string;
+	label: string;
+	filePath: string,
+	collapsed: boolean;
+	children: (File | Folder)[];
 };
 
-export type Slot = {
-	type: TreeItemType.Slot;
-	index: number;
-	groupId: string | null;
+export type File = {
+	readonly type: TreeItemType.File;
+	id: string;
+	label: string;
+	filePath: string;
 };
 
-export function isTab(item: Tab | Group | Slot): item is Tab {
-	return item.type === TreeItemType.Tab;
-}
-
-
-export function isGroup(item: Tab | Group | Slot): item is Group {
-	return item.type === TreeItemType.Group;
-}
-
-
-export function isSlot(item: Tab | Group | Slot): item is Slot {
-	return item.type === TreeItemType.Slot;
-}
+export type SearchResult = {
+	element: File | Folder | null;
+	path: number[];
+  }
