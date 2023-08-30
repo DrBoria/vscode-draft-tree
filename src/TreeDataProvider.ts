@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { Disposable } from './lifecycle';
 import { File, Folder, TreeItemType } from './types';
-import { openFileByPath, deleteInRootById, sortByName, renameInRootById } from './utils';
+import { openFileByPath, deleteInRootById, sortByName } from './utils';
 
 
 export class TreeDataProvider extends Disposable implements vscode.TreeDataProvider<File | Folder>, vscode.TreeDragAndDropController<File | Folder> {
@@ -84,7 +84,10 @@ export class TreeDataProvider extends Disposable implements vscode.TreeDataProvi
 		// Filter logic for situation when we move to the same place target element (like return)
 		const draggeds: Array<File | Folder> = (treeDataTransfer.get(TreeDataProvider.TabDropMimeType)?.value ?? []).filter((tab: any) => tab !== target);
 
-		if (target?.type === TreeItemType.Folder) {
+		if (!target) {
+			draggeds.forEach(draggableElement => this.deleteById(draggableElement.id));
+			this.root = [...this.root, ...draggeds];
+		} else if (target?.type === TreeItemType.Folder) {
 			draggeds.forEach(draggableElement => this.deleteById(draggableElement.id));
 			target.children = [...draggeds, ...target.children].sort(sortByName);
 		}

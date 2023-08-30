@@ -75,6 +75,11 @@
 				"icon": "$(close)"
 			},
 			{
+				"command": "tabsTreeOpenView.newFolder",
+				"title": "Save to Workspace",
+				"icon": "$(new-folder)"
+			},
+			{
 				"command": "tabsTreeExplorerView.tab.close",
 				"title": "Close",
 				"icon": "$(close)"
@@ -88,16 +93,6 @@
 				"command": "tabsTreeExplorerView.group.cancelGroup",
 				"title": "Cancel Group",
 				"icon": "$(array)"
-			},
-			{
-				"command": "tabsTreeExplorerView.saveToWorkspace",
-				"title": "Save to Workspace",
-				"icon": "$(save-all)"
-			},
-			{
-				"command": "tabsTreeExplorerView.deleteFromWorkspace",
-				"title": "Delete from Workspace",
-				"icon": "$(trash)"
 			},
 			{
 				"command": "tabsTreeExplorerView.enableSortMode",
@@ -160,8 +155,8 @@
 			],
 			"view/title": [
 				{
-					"command": "tabsTreeExplorerView.saveToWorkspace",
-					"when": "view =~ /^tabsTreeExplorerView/ && tabGroup.groups:allCollapsed",
+					"command": "tabsTreeOpenView.newFolder",
+					"when": "view == tabsTreeOpenView",
 					"group": "navigation@1"
 				},
 				{

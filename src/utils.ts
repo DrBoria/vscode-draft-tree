@@ -6,6 +6,17 @@ import { File, Folder, TreeItemType } from './types';
 
 const ignoredFiles = ["node_modules", 'src'];
 
+export function createFolder(label: string, filePath?:string, children: Array<File | Folder> = []): Folder {
+  return {
+    type: 1,
+    id: randomUUID(),
+    label,
+    filePath,
+    collapsed: true,
+    children,  // Recursively get file path tree for subdirectory
+  }
+}
+
 export function getFilePathTree(dir: string): any {
   const files = fs.readdirSync(dir);
   let filePathTree: any = [];
@@ -15,14 +26,7 @@ export function getFilePathTree(dir: string): any {
     const stats = fs.statSync(filePath);
 
     if (stats.isDirectory() && !ignoredFiles.includes(file)) {
-      filePathTree.push({
-        type: 1,
-        id: randomUUID(),
-        label: file,
-        filePath,
-        collapsed: true,
-        children: getFilePathTree(filePath),  // Recursively get file path tree for subdirectory
-      })
+      filePathTree.push(createFolder(file, filePath, getFilePathTree(filePath))); // Recursively get file path tree for subdirectory
     } else {
       filePathTree.push({
         type: 0,
@@ -35,7 +39,6 @@ export function getFilePathTree(dir: string): any {
 
   return filePathTree;
 }
-
 
 export async function openFileByPath(filePath: string): Promise<void> {
   try {

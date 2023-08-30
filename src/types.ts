@@ -7,7 +7,7 @@ export type Folder = {
 	readonly type: TreeItemType.Folder;
 	id: string;
 	label: string;
-	filePath: string,
+	filePath?: string,
 	collapsed: boolean;
 	children: (File | Folder)[];
 };

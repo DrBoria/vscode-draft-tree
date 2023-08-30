@@ -1,6 +1,6 @@
 
 import * as vscode from 'vscode';
-import { asPromise, updateIds } from './utils';
+import { asPromise, createFolder, updateIds } from './utils';
 import { ExclusiveHandle } from './event';
 import { Disposable } from './lifecycle';
 import { TreeDataProvider } from './TreeDataProvider';
@@ -90,6 +90,19 @@ export class TabsView extends Disposable {
 		this._register(vscode.commands.registerCommand('tabsTreeOpenView.reset', () => {
 			WorkspaceState.setState([]);
 			this.treeOpenedDataProvider.setState(initialState);
+		}));
+
+		// NEW FOLDER
+		this._register(vscode.commands.registerCommand('tabsTreeOpenView.newFolder', () => {
+			vscode.window.showInputBox({ placeHolder: 'Type name here' }).then(input => {
+				if (input) {
+					const currentState = this.treeOpenedDataProvider.getState();
+					
+					const folder = createFolder(input);
+
+					this.treeOpenedDataProvider.setState([folder, ...currentState]);
+				}
+			})
 		}));
 
 		/* ******** PACK OF REGISTRED EVENTS END ******** */
