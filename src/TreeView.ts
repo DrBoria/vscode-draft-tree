@@ -29,7 +29,7 @@ export class TabsView extends Disposable {
 		}));
 
 		// OPENED VIEW CREATION
-		const workspaceSavedState = this.initializeOpenedState();
+		const workspaceSavedState = WorkspaceState.getState() ?? [];
 		this.saveState(workspaceSavedState);
 		this.treeOpenedDataProvider.setState(workspaceSavedState);
 		const openView = this._register(vscode.window.createTreeView('tabsTreeOpenView', {
@@ -71,8 +71,6 @@ export class TabsView extends Disposable {
 			}
 		}));
 
-		/* ********** CUSTOM GROUPS ********** */
-
 		// ADD TO OPEN
 		this._register(vscode.commands.registerCommand('tabsTreeExplorerView.addToOpen', (element: File | Folder) => {
 			const currentState = this.treeOpenedDataProvider.getState();
@@ -82,6 +80,7 @@ export class TabsView extends Disposable {
 			this.treeOpenedDataProvider.setState([...currentState, elementWithCustomIds]);
 		}));
 
+		// CLOSE
 		this._register(vscode.commands.registerCommand('tabsTreeOpenView.close', (element: File | Folder) => {
 			this.treeOpenedDataProvider.deleteById(element.id);
 		}));
@@ -105,68 +104,13 @@ export class TabsView extends Disposable {
 			})
 		}));
 
-		/* ******** PACK OF REGISTRED EVENTS END ******** */
+		// FILTER
+		this._register(vscode.commands.registerCommand('tabsTreeOpenView.filter', () => {
+			vscode.commands.executeCommand('list.find');
+		}))
 	}
-
-	private initializeOpenedState(): Array<File | Folder> {
-		const jsonItems = WorkspaceState.getState() ?? [];
-		// const nativeTabs = vscode.window.tabGroups.all.flatMap(tabGroup => tabGroup.tabs);
-
-		return jsonItems
-	}
-
-	// private mergeState(jsonItems: Array<Tab | Group>, nativeTabs: vscode.Tab[]): Array<Tab | Group> {
-	// 	const mergedTabs: Array<Tab | Group> = [];
-
-	// 	for (const jsonItem of jsonItems) {
-	// 		if (jsonItem.type === TreeItemType.Tab) {
-	// 			const length = nativeTabs.length;
-	// 			nativeTabs = nativeTabs.filter((nativeTab) => !this.isCorrespondingTab(nativeTab, jsonItem));
-	// 			if (nativeTabs.length < length) {
-	// 				mergedTabs.push(jsonItem);
-	// 			}
-	// 		} else {
-	// 			const children: Tab[] = [];
-	// 			jsonItem.children.forEach(tab => {
-	// 				const length = nativeTabs.length;
-	// 				nativeTabs = nativeTabs.filter((nativeTab) => !this.isCorrespondingTab(nativeTab, tab));
-
-	// 				if (nativeTabs.length < length) {
-	// 					children.push(tab);
-	// 				}
-	// 			});
-
-	// 			if (children.length > 0) {
-	// 				mergedTabs.push({ ...jsonItem, children });
-	// 			}
-	// 		}
-	// 	}
-
-	// 	const tabMap: Record<string, Tab> = {}; // if there are same resources in multiple tab group, add only one
-	// 	nativeTabs.forEach(tab => {
-	// 		try {
-	// 			const id = getNormalizedTabId(tab);
-	// 			if (!tabMap[id]) {
-	// 				tabMap[id] = { type: TreeItemType.Tab, groupId: null, id };
-	// 				mergedTabs.push(tabMap[id]);
-	// 			}
-	// 		} catch {
-	// 			// won't add unimplemented-typed tab into tree
-	// 		}
-	// 	})
-
-	// 	return mergedTabs;
-	// }
 
 	private saveState(state: Array<File | Folder>): void {
 		WorkspaceState.setState(state);
 	}
-
-	// private isCorrespondingTab(tab: vscode.Tab, jsonTab: Tab): boolean {
-	// 	try {
-	// 		return jsonTab.id === getNormalizedTabId(tab);
-	// 	} catch {
-	// 		return false;
-	// 	}
-	// }
 }
