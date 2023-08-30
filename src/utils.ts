@@ -17,6 +17,15 @@ export function createFolder(label: string, filePath?:string, children: Array<Fi
   }
 }
 
+export function createFile(label: string, filePath?: string) {
+  return {
+    type: 0,
+    id: randomUUID(),
+    label,
+    filePath
+  }
+}
+
 export function getFilePathTree(dir: string): any {
   const files = fs.readdirSync(dir);
   let filePathTree: any = [];
@@ -28,12 +37,7 @@ export function getFilePathTree(dir: string): any {
     if (stats.isDirectory() && !ignoredFiles.includes(file)) {
       filePathTree.push(createFolder(file, filePath, getFilePathTree(filePath))); // Recursively get file path tree for subdirectory
     } else {
-      filePathTree.push({
-        type: 0,
-        id: randomUUID(),
-        label: file,
-        filePath
-      })
+      filePathTree.push(createFile(file, filePath))
     }
   });
 
@@ -51,6 +55,22 @@ export async function openFileByPath(filePath: string): Promise<void> {
 
 export function asPromise<T>(thenable: Thenable<T>): Promise<T> {
   return new Promise<T>((resolve, reject) => thenable.then(resolve, reject));
+}
+
+export function parseElement(element: vscode.Uri) {
+  const elementPath = element.path.split('/');
+  const elementName = elementPath[elementPath.length - 1];
+
+  if (fs.lstatSync(element.path).isFile()) {
+
+    return createFile(elementName, element.path);
+  } else {
+    return createFolder(
+      elementName,
+      element.path,
+      getFilePathTree(element.path)
+      )
+  }
 }
 
 export function updateIds(element: File | Folder) {

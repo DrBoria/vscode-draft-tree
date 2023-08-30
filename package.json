@@ -34,26 +34,11 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
-		"viewsContainers": {
-			"activitybar": [
-				{
-					"id": "tabs",
-					"title": "Tab Group Extended",
-					"icon": "media/icon.svg"
-				}
-			]
-		},
 		"views": {
-			"tabs": [
+			"explorer": [
 				{
 					"id": "tabsTreeOpenView",
-					"name": "Opened Tabs",
-					"icon": "media/icon.svg",
-					"contextualTitle": "Tabs"
-				},
-				{
-					"id": "tabsTreeExplorerView",
-					"name": "Tabs",
+					"name": "Custom Structure",
 					"icon": "media/icon.svg",
 					"contextualTitle": "Tabs"
 				}
@@ -61,8 +46,8 @@
 		},
 		"commands": [
 			{
-				"command": "tabsTreeExplorerView.addToOpen",
-				"title": "Add to Open"
+				"command": "explorer.addToOpen",
+				"title": "+ Add to Open"
 			},
 			{
 				"command": "tabsTreeOpenView.rename",
@@ -86,12 +71,13 @@
 			}
 		],
 		"menus": {
-			"view/item/context": [
+			"explorer/context": [
 				{
-					"command": "tabsTreeExplorerView.addToOpen",
-					"when": "view == tabsTreeExplorerView",
-					"group": "tabsTreeExplorerView@0"
-				},
+					"command": "explorer.addToOpen",
+					"group": "explorer@10"
+				}
+			],
+			"view/item/context": [
 				{
 					"command": "tabsTreeOpenView.rename",
 					"when": "view == tabsTreeOpenView",

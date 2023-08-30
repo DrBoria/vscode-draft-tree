@@ -1,6 +1,6 @@
 
 import * as vscode from 'vscode';
-import { asPromise, createFolder, updateIds } from './utils';
+import { asPromise, createFolder, parseElement } from './utils';
 import { ExclusiveHandle } from './event';
 import { Disposable } from './lifecycle';
 import { TreeDataProvider } from './TreeDataProvider';
@@ -15,13 +15,12 @@ export class TabsView extends Disposable {
 
 	constructor(private workspaceRoot: string | undefined) {
 		super();
-		let initialState: Array<File | Folder> = [];
 
+		// EXPLORER VIEW CREATION
+		let initialState: Array<File | Folder> = [];
 		if (workspaceRoot) {
 			initialState = getFilePathTree(workspaceRoot);
 		}
-
-		// EXPLORER VIEW CREATION
 		this.treeExplorerDataProvider.setState(initialState);
 		const explorerView = this._register(vscode.window.createTreeView('tabsTreeExplorerView', {
 			treeDataProvider: this.treeExplorerDataProvider,
@@ -72,11 +71,11 @@ export class TabsView extends Disposable {
 		}));
 
 		// ADD TO OPEN
-		this._register(vscode.commands.registerCommand('tabsTreeExplorerView.addToOpen', (element: File | Folder) => {
+		this._register(vscode.commands.registerCommand('explorer.addToOpen', (element: vscode.Uri) => {
 			const currentState = this.treeOpenedDataProvider.getState();
 
 			// We have to update ID's if we need to keep different folder versions in one page
-			const elementWithCustomIds = updateIds(element);
+			const elementWithCustomIds = parseElement(element);
 			this.treeOpenedDataProvider.setState([...currentState, elementWithCustomIds]);
 		}));
 
