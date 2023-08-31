@@ -17,7 +17,7 @@ export function createFolder(label: string, filePath?:string, children: Array<Fi
   }
 }
 
-export function createFile(label: string, filePath?: string) {
+export function createFile(label: string, filePath: string): File {
   return {
     type: 0,
     id: randomUUID(),
@@ -57,7 +57,7 @@ export function asPromise<T>(thenable: Thenable<T>): Promise<T> {
   return new Promise<T>((resolve, reject) => thenable.then(resolve, reject));
 }
 
-export function parseElement(element: vscode.Uri) {
+export function parseElement(element: vscode.Uri): Folder | File {
   const elementPath = element.path.split('/');
   const elementName = elementPath[elementPath.length - 1];
 
@@ -69,7 +69,7 @@ export function parseElement(element: vscode.Uri) {
       elementName,
       element.path,
       getFilePathTree(element.path)
-      )
+      ) as Folder
   }
 }
 

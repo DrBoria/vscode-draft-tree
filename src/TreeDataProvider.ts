@@ -32,7 +32,7 @@ export class TreeDataProvider extends Disposable implements vscode.TreeDataProvi
 	private createFile(tab: File): vscode.TreeItem {
 		return {
 			collapsibleState: vscode.TreeItemCollapsibleState.None,
-			resourceUri: vscode.Uri.file(tab.filePath),
+			resourceUri: vscode.Uri.file(tab.filePath || tab.id), // For just added files filePath could be undefined but id = filepath
 		};
 	}
 	// Here implements, how should elements look like (like real data of element displayed)
@@ -47,6 +47,7 @@ export class TreeDataProvider extends Disposable implements vscode.TreeDataProvi
 				}
 					
 			}
+
 			// this.treeItemMap[tabId].contextValue = element.groupId === null ? 'tab' : 'grouped-tab';
 			return this.treeItemMap[tabId];
 		}
@@ -62,6 +63,7 @@ export class TreeDataProvider extends Disposable implements vscode.TreeDataProvi
 			const treeItem = this.treeItemMap[element.id];
 			treeItem.label = element.label;
 		}
+
 
 		return this.treeItemMap[element.id]
 	}

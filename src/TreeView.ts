@@ -6,26 +6,14 @@ import { Disposable } from './lifecycle';
 import { TreeDataProvider } from './TreeDataProvider';
 import { File, Folder, TreeItemType } from './types';
 import { WorkspaceState } from './WorkspaceState';
-import { getFilePathTree } from './utils';
 
 export class TabsView extends Disposable {
 	private treeExplorerDataProvider: TreeDataProvider = this._register(new TreeDataProvider());
 	private treeOpenedDataProvider: TreeDataProvider = this._register(new TreeDataProvider());
 	private exclusiveHandle = new ExclusiveHandle();
 
-	constructor(private workspaceRoot: string | undefined) {
+	constructor() {
 		super();
-
-		// EXPLORER VIEW CREATION
-		let initialState: Array<File | Folder> = [];
-		if (workspaceRoot) {
-			initialState = getFilePathTree(workspaceRoot);
-		}
-		this.treeExplorerDataProvider.setState(initialState);
-		const explorerView = this._register(vscode.window.createTreeView('tabsTreeExplorerView', {
-			treeDataProvider: this.treeExplorerDataProvider,
-			canSelectMany: true
-		}));
 
 		// OPENED VIEW CREATION
 		const workspaceSavedState = WorkspaceState.getState() ?? [];
@@ -36,6 +24,8 @@ export class TabsView extends Disposable {
 			dragAndDropController: this.treeOpenedDataProvider,
 			canSelectMany: true
 		}));
+
+		this._register(this.treeExplorerDataProvider)
 
 		/* ******** PACK OF REGISTRED EVENTS START ******** */
 
@@ -50,22 +40,12 @@ export class TabsView extends Disposable {
 			})
 		}));
 
-		this._register(this.treeExplorerDataProvider)
-
 		// CLICK TO DIFFERENT ELEMENT
 		this._register(openView.onDidChangeSelection(e => {
 			if (e.selection.length > 0) {
 				const item = e.selection[e.selection.length - 1];
 				if (item.type === TreeItemType.File) {
 					this.exclusiveHandle.run(() => asPromise(this.treeOpenedDataProvider.openFile(item)));
-				}
-			}
-		}));
-		this._register(explorerView.onDidChangeSelection(e => {
-			if (e.selection.length > 0) {
-				const item = e.selection[e.selection.length - 1];
-				if (item.type === TreeItemType.File) {
-					this.exclusiveHandle.run(() => asPromise(this.treeExplorerDataProvider.openFile(item)));
 				}
 			}
 		}));
@@ -82,12 +62,6 @@ export class TabsView extends Disposable {
 		// CLOSE
 		this._register(vscode.commands.registerCommand('tabsTreeOpenView.close', (element: File | Folder) => {
 			this.treeOpenedDataProvider.deleteById(element.id);
-		}));
-
-		// RESET
-		this._register(vscode.commands.registerCommand('tabsTreeOpenView.reset', () => {
-			WorkspaceState.setState([]);
-			this.treeOpenedDataProvider.setState(initialState);
 		}));
 
 		// NEW FOLDER
