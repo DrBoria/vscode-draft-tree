@@ -79,6 +79,16 @@
 				"command": "tabsTreeOpenView.import",
 				"title": "Import",
 				"icon": "$(sign-in)"
+			},
+			{
+				"command": "tabsTreeOpenView.expandAll",
+				"title": "Expand All",
+				"icon": "$(expand-all)"
+			},
+			{
+				"command": "tabsTreeOpenView.collapseAll",
+				"title": "Collapse All",
+				"icon": "$(collapse-all)"
 			}
 		],
 		"menus": {
@@ -120,6 +130,16 @@
 					"command": "tabsTreeOpenView.import",
 					"when": "view == tabsTreeOpenView",
 					"group": "navigation@2"
+				},
+				{
+					"command": "tabsTreeOpenView.expandAll",
+					"when": "view == tabsTreeOpenView",
+					"group": "navigation@4"
+				},
+				{
+					"command": "tabsTreeOpenView.collapseAll",
+					"when": "view == tabsTreeOpenView",
+					"group": "navigation@5"
 				}
 			]
 		}

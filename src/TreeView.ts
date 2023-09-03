@@ -26,15 +26,6 @@ export class TabsView extends Disposable {
 
 		/* ******** PACK OF REGISTRED EVENTS START ******** */
 
-		// RENAME
-		this._register(vscode.commands.registerCommand('tabsTreeOpenView.rename', (element: File | Folder ) => {
-			vscode.window.showInputBox({ placeHolder: 'Type name here', value: element.label }).then(input => {
-				if (input) {
-					this.treeOpenedDataProvider.rename(element, input);
-				}
-			})
-		}));
-
 		// CLICK TO DIFFERENT ELEMENT
 		this._register(openView.onDidChangeSelection(e => {
 			if (e.selection.length > 0) {
@@ -45,6 +36,15 @@ export class TabsView extends Disposable {
 			}
 		}));
 
+		// RENAME
+		this._register(vscode.commands.registerCommand('tabsTreeOpenView.rename', (element: File | Folder ) => {
+			vscode.window.showInputBox({ placeHolder: 'Type name here', value: element.label }).then(input => {
+				if (input) {
+					this.treeOpenedDataProvider.rename(element, input);
+				}
+			})
+		}));
+
 		// ADD TO OPEN
 		this._register(vscode.commands.registerCommand('explorer.addToOpen', (element: vscode.Uri) => {
 			const currentState = this.treeOpenedDataProvider.getState();
@@ -53,12 +53,7 @@ export class TabsView extends Disposable {
 			const elementWithCustomIds = parseElement(element);
 			this.treeOpenedDataProvider.setState([...currentState, elementWithCustomIds]);
 		}));
-
-		// CLOSE
-		this._register(vscode.commands.registerCommand('tabsTreeOpenView.close', (element: File | Folder) => {
-			this.treeOpenedDataProvider.deleteById(element.id);
-		}));
-
+		
 		// NEW FOLDER
 		this._register(vscode.commands.registerCommand('tabsTreeOpenView.newFolder', () => {
 			vscode.window.showInputBox({ placeHolder: 'Type name here' }).then(input => {
@@ -70,6 +65,11 @@ export class TabsView extends Disposable {
 					this.treeOpenedDataProvider.setState([folder, ...currentState]);
 				}
 			})
+		}));
+
+		// CLOSE
+		this._register(vscode.commands.registerCommand('tabsTreeOpenView.close', (element: File | Folder) => {
+			this.treeOpenedDataProvider.deleteById(element.id);
 		}));
 
 		// FILTER
@@ -105,9 +105,49 @@ export class TabsView extends Disposable {
 
 		// SAVE TO WORSPACE
 		this._register(this.treeOpenedDataProvider.onDidChangeTreeData(() => this.saveState(this.treeOpenedDataProvider.getState())));
+
+
+		// EXPAND
+		this._register(vscode.commands.registerCommand('tabsTreeOpenView.expandAll', () => {
+			this.expandAll(openView);
+		}));
+		// this._register(openView.onDidExpandElement((element) => {
+		// 	if (element.element.type === TreeItemType.Folder) {
+		// 		this.treeOpenedDataProvider.setCollapsedState(element.element, false);
+		// 		this.saveState(this.treeDataProvider.getState());
+		// 	}
+		// }));
+		
+		// COLLAPSE
+		this._register(vscode.commands.registerCommand('tabsTreeOpenView.collapseAll', () => vscode.commands.executeCommand('list.collapseAll')));
+		// this._register(openView.onDidCollapseElement((element) => {
+		// 	if (element.element.type === TreeItemType.Folder) {
+		// 	this.treeOpenedDataProvider.setCollapsedState(element.element, true);
+		// 	this.saveState(this.treeDataProvider.getState());
+		// }}));
 	}
 
 	private saveState(state: Array<File | Folder>): void {
 		WorkspaceState.setState(state);
+	}
+
+	private async expandAll(view: vscode.TreeView<vscode.TreeItem>) {
+		const rootNodes = await this.treeOpenedDataProvider.getChildren();
+		if (!rootNodes) return;
+
+		for (const node of rootNodes) {
+			await this.expandNode(view, node);
+		}
+	}
+	
+	private async expandNode(view: vscode.TreeView<vscode.TreeItem>, node: vscode.TreeItem) {
+		await view.reveal(node, { expand: true });
+	
+		const children = await this.treeOpenedDataProvider.getChildren(node as any);
+		if (!children) return;
+
+		for (const child of children) {
+			if (child.type === TreeItemType.Folder) await this.expandNode(view, child);
+		}
 	}
 }

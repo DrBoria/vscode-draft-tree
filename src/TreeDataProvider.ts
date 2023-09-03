@@ -68,6 +68,10 @@ export class TreeDataProvider extends Disposable implements vscode.TreeDataProvi
 		return this.treeItemMap[element.id]
 	}
 
+	getParent(node: any): any | undefined {
+        return node.parent;
+    }
+
 	public triggerRerender() {
 		this._onDidChangeTreeData.fire();
 	}
