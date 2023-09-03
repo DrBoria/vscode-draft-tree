@@ -19,3 +19,13 @@ Allows to make a draft of project structure without exact disc changes
 * Change structure in a way you see it is good
   
 ![change structure](https://github.com/DrBoria/vscode-draft-tree/assets/13663665/9758b957-3d7a-430a-bb50-6a096b73878b)
+
+
+## Additional functionality
+
+* Import and export selected directory
+* Filtering
+
+## Known issues
+* Import: if folder path differ - globally replace it in *.json file you're trying to import
+* Filtering is not working in sub dirrectories
