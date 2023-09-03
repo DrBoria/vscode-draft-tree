@@ -12,7 +12,7 @@ Allows to make a draft of project structure without exact disc changes
   
 ![add-anything](https://github.com/DrBoria/vscode-draft-tree/assets/13663665/5016c014-1e8d-43ee-a5c7-31fac503f8e3)
 
-* Rename anything in way you'd like
+* Rename anything in a way you'd like
   
 ![rename](https://github.com/DrBoria/vscode-draft-tree/assets/13663665/052b079a-da90-4690-872a-aabe00accccf)
 
@@ -25,7 +25,10 @@ Allows to make a draft of project structure without exact disc changes
 
 * Import and export selected directory
 * Filtering
+* Expand All
+* Collapse All
+* Create a new virtual folder (it will not create a folder on the disc)
 
 ## Known issues
-* Import: if folder path differ - globally replace it in *.json file you're trying to import
-* Filtering is not working in sub dirrectories
+* Import: If the folder path differs - globally replace it in *.json file you're trying to import
+* Filtering is not working in sub-directories
