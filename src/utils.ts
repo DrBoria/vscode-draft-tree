@@ -111,26 +111,43 @@ export function deleteInRootById(elements: Array<File | Folder>, id: string): (F
 	return null;
 }
 
-  export function sortByName(a: File | Folder, b: File | Folder) {
-      // Convert both names to lowercase for case-insensitive sorting
-      const labelA = a.label.toLowerCase();
-      const labelB = b.label.toLowerCase();
-    
-      // Folders always on top of Files
-      if (a.type === TreeItemType.File && b.type === TreeItemType.Folder) {
-        return 1;
-      }
-      if (a.type === TreeItemType.Folder && b.type === TreeItemType.File) {
-        return -1;
-      }
+export function sortByName(a: File | Folder, b: File | Folder) {
+    // Convert both names to lowercase for case-insensitive sorting
+    const labelA = a.label.toLowerCase();
+    const labelB = b.label.toLowerCase();
+  
+    // Folders always on top of Files
+    if (a.type === TreeItemType.File && b.type === TreeItemType.Folder) {
+      return 1;
+    }
+    if (a.type === TreeItemType.Folder && b.type === TreeItemType.File) {
+      return -1;
+    }
 
-      if (labelA < labelB) {
-        return -1; // The first name comes before the second name (in alphabetical order)
-      }
-    
-      if (labelA > labelB) {
-        return 1; // The first name comes after the second name (in alphabetical order)
-      }
-    
-      return 0; // The names are equal
+    if (labelA < labelB) {
+      return -1; // The first name comes before the second name (in alphabetical order)
+    }
+  
+    if (labelA > labelB) {
+      return 1; // The first name comes after the second name (in alphabetical order)
+    }
+  
+    return 0; // The names are equal
+}
+
+export function updateCollapsed(arr: Array<Folder | File>, state: boolean): Array<Folder | File> {
+  if (!Array.isArray(arr)) {
+    return arr;
   }
+
+  for (const obj of arr) {
+    if (obj.type === TreeItemType.Folder) {
+      if (obj.children.length) {
+        obj.children = updateCollapsed(obj.children, state);
+      }
+      obj.collapsed = state;
+    }
+  }
+
+  return arr;
+}

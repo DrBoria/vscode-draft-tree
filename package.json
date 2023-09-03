@@ -1,11 +1,15 @@
 {
-	"name": "tab-group",
-	"displayName": "Tab Group Extended",
-	"description": "Edge's vertical Tab Group in VSCode",
-	"publisher": "jiapeiyao",
-	"version": "2.0.2",
+	"name": "vscode-draft-tree",
+	"displayName": "Draft Tree",
+	"description": "Add possibility to make drafts in your VSCode exploder view",
+	"publisher": "drboria",
+	"version": "0.0.2",
 	"license": "MIT",
 	"contributors": [
+		{
+			"name": "Bill Goo",
+			"email": "billgoo0813@gmail.com"
+		},
 		{
 			"name": "Jiapei Yao",
 			"email": "charlesyjp@gmail.com"
@@ -17,10 +21,10 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/billgoo/vscode-tab-group"
+		"url": "https://github.com/DrBoria/vscode-draft-tree"
 	},
 	"bugs": {
-		"url": "https://github.com/billgoo/vscode-tab-group/issues"
+		"url": "https://github.com/DrBoria/vscode-draft-tree/issues"
 	},
 	"categories": [
 		"Other"
@@ -38,7 +42,7 @@
 			"explorer": [
 				{
 					"id": "tabsTreeOpenView",
-					"name": "Custom Structure",
+					"name": "Draft Tree",
 					"icon": "media/icon.svg",
 					"contextualTitle": "Tabs"
 				}
@@ -68,6 +72,16 @@
 				"command": "tabsTreeOpenView.filter",
 				"title": "Filter",
 				"icon": "$(search)"
+			},
+			{
+				"command": "tabsTreeOpenView.expandAll",
+				"title": "Filter",
+				"icon": "$(expand-all)"
+			},
+			{
+				"command": "tabsTreeOpenView.collapseAll",
+				"title": "Filter",
+				"icon": "$(collapse-all)"
 			}
 		],
 		"menus": {
@@ -98,7 +112,17 @@
 				{
 					"command": "tabsTreeOpenView.filter",
 					"when": "view == tabsTreeOpenView",
-					"group": "navigation@1"
+					"group": "navigation@2"
+				},
+				{
+					"command": "tabsTreeOpenView.expandAll",
+					"when": "view == tabsTreeOpenView",
+					"group": "navigation@3"
+				},
+				{
+					"command": "tabsTreeOpenView.collapseAll",
+					"when": "view == tabsTreeOpenView",
+					"group": "navigation@4"
 				}
 			]
 		}

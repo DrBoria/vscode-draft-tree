@@ -1,6 +1,6 @@
 
 import * as vscode from 'vscode';
-import { asPromise, createFolder, parseElement } from './utils';
+import { asPromise, createFolder, parseElement, updateCollapsed } from './utils';
 import { ExclusiveHandle } from './event';
 import { Disposable } from './lifecycle';
 import { TreeDataProvider } from './TreeDataProvider';
@@ -8,7 +8,6 @@ import { File, Folder, TreeItemType } from './types';
 import { WorkspaceState } from './WorkspaceState';
 
 export class TabsView extends Disposable {
-	private treeExplorerDataProvider: TreeDataProvider = this._register(new TreeDataProvider());
 	private treeOpenedDataProvider: TreeDataProvider = this._register(new TreeDataProvider());
 	private exclusiveHandle = new ExclusiveHandle();
 
@@ -25,12 +24,8 @@ export class TabsView extends Disposable {
 			canSelectMany: true
 		}));
 
-		this._register(this.treeExplorerDataProvider)
-
 		/* ******** PACK OF REGISTRED EVENTS START ******** */
 
-		// EDIT
-		this._register(this.treeOpenedDataProvider.onDidChangeTreeData(() => this.saveState(this.treeOpenedDataProvider.getState())));
 		// RENAME
 		this._register(vscode.commands.registerCommand('tabsTreeOpenView.rename', (element: File | Folder ) => {
 			vscode.window.showInputBox({ placeHolder: 'Type name here', value: element.label }).then(input => {
@@ -77,10 +72,30 @@ export class TabsView extends Disposable {
 			})
 		}));
 
+		// EXPAND
+		this._register(vscode.commands.registerCommand('tabsTreeOpenView.expandAll', () => {
+			for (const item of this.treeOpenedDataProvider.getState()) {
+				if (item.type === TreeItemType.Folder && item.children.length) {
+					openView.reveal(item, {expand: true});
+				}
+			}
+
+			const newState = this.treeOpenedDataProvider.getState();
+
+			const updatedCollapsedState = updateCollapsed(newState, true);
+			console.log(updatedCollapsedState);
+		}));
+
+		// Collapse
+		this._register(vscode.commands.registerCommand('tabsTreeOpenView.collapseAll', () => vscode.commands.executeCommand('list.collapseAll')));
+
 		// FILTER
 		this._register(vscode.commands.registerCommand('tabsTreeOpenView.filter', () => {
 			vscode.commands.executeCommand('list.find');
-		}))
+		}));
+
+		// SAVE TO WORSPACE
+		this._register(this.treeOpenedDataProvider.onDidChangeTreeData(() => this.saveState(this.treeOpenedDataProvider.getState())));
 	}
 
 	private saveState(state: Array<File | Folder>): void {
