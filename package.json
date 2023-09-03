@@ -3,7 +3,7 @@
 	"displayName": "Draft Tree",
 	"description": "Add possibility to make drafts in your VSCode exploder view",
 	"publisher": "drboria",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"license": "MIT",
 	"contributors": [
 		{
@@ -55,13 +55,15 @@
 			},
 			{
 				"command": "tabsTreeOpenView.rename",
-				"title": "Rename",
-				"icon": "$(edit)"
+				"title": "Rename"
+			},
+			{
+				"command": "tabsTreeOpenView.export",
+				"title": "Export"
 			},
 			{
 				"command": "tabsTreeOpenView.close",
-				"title": "Close",
-				"icon": "$(close)"
+				"title": "Close"
 			},
 			{
 				"command": "tabsTreeOpenView.newFolder",
@@ -72,6 +74,11 @@
 				"command": "tabsTreeOpenView.filter",
 				"title": "Filter",
 				"icon": "$(search)"
+			},
+			{
+				"command": "tabsTreeOpenView.import",
+				"title": "Import",
+				"icon": "$(sign-in)"
 			}
 		],
 		"menus": {
@@ -83,14 +90,19 @@
 			],
 			"view/item/context": [
 				{
-					"command": "tabsTreeOpenView.rename",
-					"when": "view == tabsTreeOpenView",
-					"group": "tabsTreeOpenView@0"
-				},
-				{
 					"command": "tabsTreeOpenView.close",
 					"when": "view == tabsTreeOpenView",
-					"group": "tabsTreeOpenView@0"
+					"group": "edit@2"
+				},
+				{
+					"command": "tabsTreeOpenView.rename",
+					"when": "view == tabsTreeOpenView",
+					"group": "navigation@0"
+				},
+				{
+					"command": "tabsTreeOpenView.export",
+					"when": "view == tabsTreeOpenView",
+					"group": "navigation@1"
 				}
 			],
 			"view/title": [
@@ -101,6 +113,11 @@
 				},
 				{
 					"command": "tabsTreeOpenView.filter",
+					"when": "view == tabsTreeOpenView",
+					"group": "navigation@3"
+				},
+				{
+					"command": "tabsTreeOpenView.import",
 					"when": "view == tabsTreeOpenView",
 					"group": "navigation@2"
 				}

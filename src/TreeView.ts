@@ -1,6 +1,6 @@
-
+import * as fs from 'fs';
 import * as vscode from 'vscode';
-import { asPromise, createFolder, parseElement, updateCollapsed } from './utils';
+import { asPromise, createFolder, exportFile, parseElement, updateIds } from './utils';
 import { ExclusiveHandle } from './event';
 import { Disposable } from './lifecycle';
 import { TreeDataProvider } from './TreeDataProvider';
@@ -75,6 +75,32 @@ export class TabsView extends Disposable {
 		// FILTER
 		this._register(vscode.commands.registerCommand('tabsTreeOpenView.filter', () => {
 			vscode.commands.executeCommand('list.find');
+		}));
+
+		// EXPORT
+		this._register(vscode.commands.registerCommand('tabsTreeOpenView.export', (element: Folder) => {
+			if (element.type === TreeItemType.Folder) {
+				exportFile(element);
+			}
+		}));
+
+		// IMPORT
+		this._register(vscode.commands.registerCommand('tabsTreeOpenView.import', () => {
+			let importedData;
+
+			vscode.window.showOpenDialog({ canSelectFiles: true, canSelectFolders: false, canSelectMany: false }).then((uris: vscode.Uri[] | undefined) => {
+				if (uris && uris.length > 0) {
+					const filePath = uris[0].fsPath;
+					// HERE we got JSON imported
+					importedData = JSON.parse(fs.readFileSync(filePath).toString());
+
+					if (importedData) {
+						const currentState = this.treeOpenedDataProvider.getState();
+						const importedWithUpdatedId = updateIds(importedData); // Required to set new id's to prevent duplicates
+						this.treeOpenedDataProvider.setState([importedWithUpdatedId, ...currentState]);
+					}
+				}
+			});
 		}));
 
 		// SAVE TO WORSPACE

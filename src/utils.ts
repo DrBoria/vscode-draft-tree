@@ -151,3 +151,22 @@ export function updateCollapsed(arr: Array<Folder | File>, state: boolean): Arra
 
   return arr;
 }
+
+export function exportFile(element: Folder) {
+  vscode.window.showSaveDialog({title: element.label}).then((uri) => {
+    if (uri) {
+        const filePath = `${uri.fsPath.split('.')[0]}.json`;
+        const content = JSON.stringify(element);
+
+        fs.writeFile(filePath, content, (err) => {
+            if (err) {
+                console.error('Error exporting file:', err);
+                return;
+            }
+
+            console.log('File exported successfully!');
+        });
+    }
+});
+} 
+
