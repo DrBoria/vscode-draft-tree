@@ -72,23 +72,6 @@ export class TabsView extends Disposable {
 			})
 		}));
 
-		// EXPAND
-		this._register(vscode.commands.registerCommand('tabsTreeOpenView.expandAll', () => {
-			for (const item of this.treeOpenedDataProvider.getState()) {
-				if (item.type === TreeItemType.Folder && item.children.length) {
-					openView.reveal(item, {expand: true});
-				}
-			}
-
-			const newState = this.treeOpenedDataProvider.getState();
-
-			const updatedCollapsedState = updateCollapsed(newState, true);
-			console.log(updatedCollapsedState);
-		}));
-
-		// Collapse
-		this._register(vscode.commands.registerCommand('tabsTreeOpenView.collapseAll', () => vscode.commands.executeCommand('list.collapseAll')));
-
 		// FILTER
 		this._register(vscode.commands.registerCommand('tabsTreeOpenView.filter', () => {
 			vscode.commands.executeCommand('list.find');

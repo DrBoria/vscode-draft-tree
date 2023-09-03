@@ -72,16 +72,6 @@
 				"command": "tabsTreeOpenView.filter",
 				"title": "Filter",
 				"icon": "$(search)"
-			},
-			{
-				"command": "tabsTreeOpenView.expandAll",
-				"title": "Filter",
-				"icon": "$(expand-all)"
-			},
-			{
-				"command": "tabsTreeOpenView.collapseAll",
-				"title": "Filter",
-				"icon": "$(collapse-all)"
 			}
 		],
 		"menus": {
@@ -113,16 +103,6 @@
 					"command": "tabsTreeOpenView.filter",
 					"when": "view == tabsTreeOpenView",
 					"group": "navigation@2"
-				},
-				{
-					"command": "tabsTreeOpenView.expandAll",
-					"when": "view == tabsTreeOpenView",
-					"group": "navigation@3"
-				},
-				{
-					"command": "tabsTreeOpenView.collapseAll",
-					"when": "view == tabsTreeOpenView",
-					"group": "navigation@4"
 				}
 			]
 		}
